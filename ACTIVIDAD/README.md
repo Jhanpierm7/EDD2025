@@ -3,7 +3,7 @@
 # Funcionalidades
 
 - Solicita al inicio la capacidad del avión.
-- Permite registrar pasajeros con nombre y tipo de documento.
+- Permite registrar pasajeros con Apellido y tipo de documento.
 - Aplica una política de overbooking del 10% (capacidad + 10%).
 - Muestra los pasajeros registrados en orden de llegada.
 - Libera la memoria al finalizar.
