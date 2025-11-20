@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "pasajeros.C": "cpp",
+        "ABB.C": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
