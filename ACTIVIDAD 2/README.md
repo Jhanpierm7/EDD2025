@@ -11,7 +11,7 @@ documento como clave, junto con su destino y tipo de pasaje.
 - Mostrar el árbol estructurado  
 - Salir del sistema  
 
-## 🧱 Estructura del Nodo
+##  Estructura del Nodo
 Cada pasajero se guarda como un nodo del ABB:
 - **documento** (clave de búsqueda)
 - **destino** (Timbiquí, Juanchaco, Tumaco, etc.)
@@ -20,7 +20,7 @@ Cada pasajero se guarda como un nodo del ABB:
   - 1 → se va y regreso
 - **izq / der** → hijos del ABB
 
-## ⚙ Funciones principales
+##  Funciones principales
 
 ### `crearNodo()`
 Crea un nodo nuevo asignando memoria y llenando sus datos.
