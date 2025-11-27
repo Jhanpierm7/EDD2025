@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-//Estructura del Nodo 
+// Estructura del Nodo 
 typedef struct Pasajero {
-    int documento;               // clave de búsqueda (ABB)
-    char destino[20];            // Timbíquí, Juanchaco, Tumaco, etc.
-    int tipo_pasaje;             // 0 = se va , 1 = se va y regreso
+    int documento;               
+    char destino[20];            
+    int tipo_pasaje;             
 
     struct Pasajero *izq;
     struct Pasajero *der;
@@ -23,7 +23,7 @@ Pasajero* crearNodo(int documento, char destino[], int tipo_pasaje) {
     return nuevo;
 }
 
-//Insertar en el ABB
+// Insertar en el ABB 
 Pasajero* insertar(Pasajero* raiz, int documento, char destino[], int tipo_pasaje) {
     if (raiz == NULL) {
         return crearNodo(documento, destino, tipo_pasaje);
@@ -39,14 +39,28 @@ Pasajero* insertar(Pasajero* raiz, int documento, char destino[], int tipo_pasaj
     return raiz;
 }
 
-//Recorridos 
+// MÉTODO BUSCAR
+Pasajero* buscar(Pasajero* raiz, int documento) {
+    if (raiz == NULL)
+        return NULL;
+
+    if (documento == raiz->documento)
+        return raiz;
+
+    if (documento < raiz->documento)
+        return buscar(raiz->izq, documento);
+    else
+        return buscar(raiz->der, documento);
+}
+
+// Recorridos 
 void inorden(Pasajero* raiz) {
     if (raiz != NULL) {
         inorden(raiz->izq);
         printf("Doc: %d | Destino: %s | Tipo: %s\n",
-            raiz->documento,
-            raiz->destino,
-            raiz->tipo_pasaje == 0 ? "se va" : "se va y regreso");
+               raiz->documento,
+               raiz->destino,
+               raiz->tipo_pasaje == 0 ? "Ida" : "Ida y regreso");
         inorden(raiz->der);
     }
 }
@@ -54,9 +68,9 @@ void inorden(Pasajero* raiz) {
 void preorden(Pasajero* raiz) {
     if (raiz != NULL) {
         printf("Doc: %d | Destino: %s | Tipo: %s\n",
-            raiz->documento,
-            raiz->destino,
-            raiz->tipo_pasaje == 0 ? "se va " : "se va y regreso");
+               raiz->documento,
+               raiz->destino,
+               raiz->tipo_pasaje == 0 ? "Ida" : "Ida y regreso");
         preorden(raiz->izq);
         preorden(raiz->der);
     }
@@ -67,26 +81,26 @@ void postorden(Pasajero* raiz) {
         postorden(raiz->izq);
         postorden(raiz->der);
         printf("Doc: %d | Destino: %s | Tipo: %s\n",
-            raiz->documento,
-            raiz->destino,
-            raiz->tipo_pasaje == 0 ? "se va" : "se va  y regreso");
+               raiz->documento,
+               raiz->destino,
+               raiz->tipo_pasaje == 0 ? "Ida" : "Ida y regreso");
     }
 }
 
-//Contar Nodos
+// Contar nodos
 int contar(Pasajero* raiz) {
     if (raiz == NULL) return 0;
     return 1 + contar(raiz->izq) + contar(raiz->der);
 }
 
-//Buscar Minimo     
+// Buscar mínimo 
 Pasajero* minimo(Pasajero* raiz) {
     while (raiz->izq != NULL)
         raiz = raiz->izq;
     return raiz;
 }
 
-//Eliminar nodo por el documento     
+// Eliminar nodo
 Pasajero* eliminar(Pasajero* raiz, int documento) {
     if (raiz == NULL) return raiz;
 
@@ -97,12 +111,10 @@ Pasajero* eliminar(Pasajero* raiz, int documento) {
         raiz->der = eliminar(raiz->der, documento);
     }
     else {
-        // Caso 1: sin hijos
         if (raiz->izq == NULL && raiz->der == NULL) {
             free(raiz);
             return NULL;
         }
-        // Caso 2: un hijo
         else if (raiz->izq == NULL) {
             Pasajero* temp = raiz->der;
             free(raiz);
@@ -113,19 +125,17 @@ Pasajero* eliminar(Pasajero* raiz, int documento) {
             free(raiz);
             return temp;
         }
-        // Caso 3: dos hijos
         Pasajero* temp = minimo(raiz->der);
         raiz->documento = temp->documento;
         strcpy(raiz->destino, temp->destino);
         raiz->tipo_pasaje = temp->tipo_pasaje;
-
         raiz->der = eliminar(raiz->der, temp->documento);
     }
 
     return raiz;
 }
 
-//Menu
+// MENÚ
 void mostrarMenu() {
     printf("\n====== Sistema de Gestión de Tiquetes ======\n");
     printf("1. Registrar pasajero\n");
@@ -134,11 +144,12 @@ void mostrarMenu() {
     printf("4. Mostrar pasajeros (Postorden)\n");
     printf("5. Contar pasajeros\n");
     printf("6. Eliminar pasajero\n");
-    printf("7. Salir\n");
-    printf("Seleccione una opcion: ");
+    printf("7. Buscar pasajero\n");
+    printf("8. Salir\n");
+    printf("Seleccione una opción: ");
 }
 
-//Main 
+// MAIN
 int main() {
     Pasajero* raiz = NULL;
     int op;
@@ -158,7 +169,7 @@ int main() {
             printf("Destino: ");
             scanf("%s", dest);
 
-            printf("Tipo de pasaje (0 = se va, 1 = se va y regreso): ");
+            printf("Tipo de pasaje (0 = Ida, 1 = Ida y regreso): ");
             scanf("%d", &tipo);
 
             raiz = insertar(raiz, doc, dest, tipo);
@@ -182,10 +193,35 @@ int main() {
             int doc;
             printf("Documento a eliminar: ");
             scanf("%d", &doc);
-            raiz = eliminar(raiz, doc);
+
+            Pasajero* p = buscar(raiz, doc);
+
+            if (p == NULL) {
+                printf("❌ El pasajero no existe.\n");
+            } else {
+                raiz = eliminar(raiz, doc);
+                printf("✔ Pasajero eliminado correctamente.\n");
+            }
+        }
+        else if (op == 7) {
+            int doc;
+            printf("Documento a buscar: ");
+            scanf("%d", &doc);
+
+            Pasajero* p = buscar(raiz, doc);
+
+            if (p == NULL) {
+                printf("❌ No se encontró ese pasajero.\n");
+            } else {
+                printf("✔ Pasajero encontrado:\n");
+                printf("Doc: %d | Destino: %s | Tipo: %s\n",
+                       p->documento,
+                       p->destino,
+                       p->tipo_pasaje == 0 ? "Ida" : "Ida y regreso");
+            }
         }
 
-    } while (op != 7);
+    } while (op != 8);
 
     return 0;
 }
